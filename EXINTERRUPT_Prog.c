@@ -6,6 +6,30 @@
  */ 
 #include "EXINTERRUPT_Interface.h"
 
+/* Pointer to Functions to be assigned to ISR */
+static void (*Fptr_INT0)(void)=NULLPTR;
+static void (*Fptr_INT1)(void)=NULLPTR;
+static void (*Fptr_INT2)(void)=NULLPTR;
+
+
+/*************** Call Back Functions *****************/
+void EXI_SetCallBack(ExInterruptSource_Type Interrupt , void(*LocalPtr)(void))
+{
+	switch(Interrupt){
+		case EX_INT0:
+		Fptr_INT0=LocalPtr;
+		break;
+		case EX_INT1:
+		Fptr_INT1=LocalPtr;
+		break;
+		case EX_INT2:
+		Fptr_INT2=LocalPtr;
+		break;
+	}
+}
+
+
+/************ Enable / Disable Functions **************/
 void EXI_Enable(ExInterruptSource_Type Interrupt)
 {
 	switch(Interrupt){
@@ -36,6 +60,8 @@ void EXI_Disable(ExInterruptSource_Type Interrupt)
 	}
 }
 
+
+/*************** Choose Trigger Edge *****************/
 void EXI_TriggerEdge(ExInterruptSource_Type Interrupt , TriggerEdge_Type Edge)
 {
 	switch(Interrupt){
@@ -93,5 +119,23 @@ void EXI_TriggerEdge(ExInterruptSource_Type Interrupt , TriggerEdge_Type Edge)
 		//	CLR_BIT(MCUCSR,ISC2);
 		}
 		break;
+	}
+}
+
+
+/*************************** ISR ************************/
+ISR(INT0_vect)
+{
+	if(Fptr_INT0!=NULLPTR)
+	{
+		Fptr_INT0();
+	}
+}
+
+ISR(INT1_vect)
+{
+	if(Fptr_INT1!=NULLPTR)
+	{
+		Fptr_INT1();
 	}
 }
