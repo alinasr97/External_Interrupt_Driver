@@ -25,5 +25,6 @@ typedef double f64;
 
 typedef enum{FALSE=0,TRUE}bool_t;
 
+#define NULLPTR ((void*)0)
 
 #endif /* STP_TYPES_H_ */
